@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const discord = require('discord.js');
+const db = require('quick.db')
 require('discord-reply'); //⚠️ IMPORTANT: put this before your discord.Client()
 
 
@@ -280,11 +281,151 @@ client.on('message', message => {
 });
 
 
+
+const Trello = require("trello");
+const trello = new Trello(config.trelloAppKey, config.trelloToken);
+
+
+client.on("message", message => {
+  if (message.author.bot) return;
+  // This is where we'll put our code.
+  if (message.content.indexOf(config.prefix) !== 0) return;
+
+  const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+  const command = args.shift().toLowerCase();
+
+  if(command === 'help') {
+    message.channel.send({embed: {
+    color: 3447003,
+    author: {
+      name: client.user.username,
+      icon_url: client.user.avatarURL
+    },
+    title: "!",
+    description: "",
+    fields: [{
+        name: "Prefix",
+        value: `The current prefix is ${config.prefix}. `
+      },
+      {
+        name: "Commands.",
+        value: "The current commands are: `help`,`tban`, and `misc`"
+      },
+      {
+        name: "",
+        value: ""
+      }
+    ],
+    timestamp: new Date(),
+    footer: {
+      icon_url: client.user.avatarURL,
+      text: "with the blacklist"
+    }
+  }
+});
+  } else
+  if (command === 'blacklist') {
+    if(!message.member.roles.cache.some(role => role.name === 'E | Ban Permissions')) 
+            return message.channel.send({embed: {
+                color: 15406156,
+                description: "You do not have permission to use this command.",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }});
+    let suspect = args[0]
+    if (!suspect) {
+       return message.channel.send({embed: {
+                color: 15406156,
+                description: "Use this format: `!!blacklist [Username:UserID][banReason]`",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }}); 
+    };
+    let reason = args.slice(1).join(" ");
+    if (!reason) {
+       return message.channel.send({embed: {
+                color: 15406156,
+                description: "Use this format: `!!blacklist [Username:UserID][banReason]`",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }}); 
+    };
+      trello.addCard(suspect, reason, config.listID,
+      function (error, trelloCard) {
+          if (error) {
+              console.log("An error occured", error)
+               return message.channel.send({embed: {
+                color: 15406156,
+                description: "An error occured. Please try again later. \n ERROR:" + error,
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }}); 
+          }
+          else {
+              console.log('Added card:', trelloCard);
+              return message.channel.send({embed: {
+    color: 3447003,
+    author: {
+      name: client.user.username,
+      icon_url: client.user.avatarURL
+    },
+    title: "**Success!** Successfully blacklisted this user from all our games.",
+    description: "Blacklist details:",
+    fields: [{
+        name: "Suspect:",
+        value: suspect,
+      },
+      {
+        name: "Blacklist Reason",
+        value: reason,
+      },
+    ],
+    timestamp: new Date(),
+    footer: {
+      icon_url: client.user.avatarURL,
+      text: "Blacklist made by Lord_Shadow#0001"
+    }
+  }
+});
+          }
+      });
+  }else;
+  if (command === 'misc') {
+     message.channel.send("My uptime is: `" + client.uptime + "ms` \nMy ping is: `" + client.ws.ping + "ms`");
+   }
+});
+
+
 client.on("guildMemberAdd", member => {
  if(member.guild.id === "834723416954765332") {
-   client.channels.cache.get("834723416954765335").send(`Welcome ${member}! Please read the rules in <#855126037023948871>.`)
- }
-});
+   client.channels.cache.get("878943758681522216").send({embed: {
+color: 15844367,
+title: "**Welcome to Eastside's Communication Server!**",
+url: "",
+description: `Greetings, ${member} . Thank you for joining Eastside! We hope you enjoy your time here.`,
+fields: [{
+    name: "Information",
+    value: "--> Be sure to read our rules and regulations before interacting within our community.\n--> Do not forget to verify to gain access to all channels!\n--> Be sure to join our group: https://www.roblox.com/groups/10176133/Eastside-Cafe#!/about\n- Boosting the server gives you special perks! Get boosting!\n**𝙃𝙖𝙫𝙚 𝙛𝙪𝙣 𝙖𝙣𝙙 𝙞𝙣𝙩𝙚𝙧𝙖𝙘𝙩 𝙨𝙖𝙛𝙚𝙡𝙮**!"
+  }
+],
+timestamp: new Date(),
+footer: {
+  icon_url: client.user.avatarURL,
+  text: "© Eastside Cafe 2020 - 2021"
+}
+}
+})
+}});
+
+
 
 
 client.login(process.env.token);

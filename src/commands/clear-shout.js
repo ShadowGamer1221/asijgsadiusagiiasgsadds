@@ -2,7 +2,7 @@ const roblox = require('noblox.js');
 const Discord = require('discord.js');
 const path = require('path');
 const discord = require('discord.js');
-require('discord-reply'); //⚠️ IMPORTANT: put this before your discord.Client()
+require('discord-reply');
 require('dotenv').config();
 
 const config = {

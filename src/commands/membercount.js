@@ -1,7 +1,7 @@
 const { getGroup } = require("noblox.js")
 
 const config = {
-    description: 'Sends the membercount of the discord server and roblox group.',
+    description: 'Sends the membercount of the discord server',
     aliases: [],
     usage: '',
     rolesRequired: [],

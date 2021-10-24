@@ -1,6 +1,6 @@
 const discord = require('discord.js');
 const { MessageEmbed } = require("discord.js")
-require('discord-reply'); //⚠️ IMPORTANT: put this before your discord.Client()
+require('discord-reply');
 
 const config = {
     description: 'Ban\'s the mentioned member with the reason if provided.',

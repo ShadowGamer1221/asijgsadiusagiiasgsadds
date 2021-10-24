@@ -41,4 +41,10 @@ module.exports = {
         actionLogChannelId: '879406918202966117'
     },
     mutedRole: "863553196844777522"
-}
+},
+
+{
+  "trelloAppKey": "9b85f231c74ad035d39e2bf7cad1c7f6",
+  "trelloToken": "8a1c3f58180a7279b84292d8d98845697853a158e3f9b6935a340564f798d737",
+  "listID": "6117ca9bae6a8787c9df9836"
+};
